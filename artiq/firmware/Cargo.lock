@@ -668,6 +668,32 @@ dependencies = [
 ]
 
 [[package]]
+name = "updater"
+version = "0.0.0"
+dependencies = [
+ "alloc_list",
+ "board_artiq",
+ "board_misoc",
+ "build_misoc",
+ "byteorder",
+ "cslice",
+ "dyld",
+ "eh",
+ "failure",
+ "failure_derive",
+ "fringe",
+ "io",
+ "log",
+ "logger_artiq",
+ "managed 0.7.2",
+ "proto_artiq",
+ "riscv",
+ "smoltcp",
+ "tar-no-std",
+ "unwind_backtrace",
+]
+
+[[package]]
 name = "version_check"
 version = "0.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"

@@ -70,6 +70,7 @@ def build_artiq_soc(soc, argdict):
         builder.add_software_package("libunwind")
     if not soc.config["DRTIO_ROLE"] == "satellite":
         builder.add_software_package("runtime", os.path.join(firmware_dir, "runtime"))
+        builder.add_software_package("updater", os.path.join(firmware_dir, "updater"))
     else:
         builder.add_software_package("satman", os.path.join(firmware_dir, "satman"))
     try:
