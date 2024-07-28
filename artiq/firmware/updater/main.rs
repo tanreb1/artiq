@@ -104,10 +104,10 @@ fn setup_log_levels() {
 
 fn startup() {
     clock::init();
-    info!("ARTIQ runtime starting...");
+    info!("UPDATER starting...");
     info!("GBGB");
-    info!("software ident {}", csr::CONFIG_IDENTIFIER_STR);
-    info!("gateware ident {}", ident::read(&mut [0; 64]));
+    info!("GBGBGB {}", csr::CONFIG_IDENTIFIER_STR);
+    info!("GBGB  {}", ident::read(&mut [0; 64]));
 
     setup_log_levels();
     #[cfg(has_i2c)]

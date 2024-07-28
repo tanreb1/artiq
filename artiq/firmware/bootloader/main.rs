@@ -154,11 +154,19 @@ fn load_slave_fpga() {
     println!("  ...done");
 }
 
+pub const FLASH_BOOT_ADDRESS_UPDATER: usize = 0x00580000;
+
 fn flash_boot() {
-    const FIRMWARE: *mut u8 = board_mem::FLASH_BOOT_ADDRESS as *mut u8;
+    // const FIRMWARE: *mut u8 = board_mem::FLASH_BOOT_ADDRESS as *mut u8;
+    const FIRMWARE: *mut u8 = FLASH_BOOT_ADDRESS_UPDATER as *mut u8;
+
+    let firmware = FLASH_BOOT_ADDRESS_UPDATER as *mut u8;
+
+    println!("Flash val: {:#x}", firmware as usize);
+    
     const MAIN_RAM: *mut u8 = board_mem::MAIN_RAM_BASE as *mut u8;
 
-    println!("Booting from flash...");
+    println!("Booting from flash UPDATER...");
 
     let header = unsafe { slice::from_raw_parts(FIRMWARE, 8) };
     let length = LittleEndian::read_u32(&header[0..]) as usize;
