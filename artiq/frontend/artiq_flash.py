@@ -259,7 +259,8 @@ def main():
             "gateware":     ("spi0", 0x000000),
             "bootloader":   ("spi0", 0x400000),
             "storage":      ("spi0", 0x440000),
-            "firmware":     ("spi0", 0x450000),
+            "firmware":      ("spi0", 0x450000),
+            "updater":      ("spi0", 0x580000),
         },
         "efc1v0": {
             "programmer":   partial(ProgrammerXC7, board="efc", proxy="bscan_spi_xc7a100t.bit"),
@@ -288,7 +289,7 @@ def main():
         args.action = "gateware bootloader firmware start".split()
     needs_artifacts = any(
         action in args.action
-        for action in ["gateware", "bootloader", "firmware", "load"])
+        for action in ["gateware", "bootloader", "firmware", "updater", "load"])
     if needs_artifacts and args.dir is None:
         raise ValueError("the directory containing the binaries need to be specified using -d.")
 
@@ -341,6 +342,9 @@ def main():
                 raise ValueError("more than one firmware file, please clean up your build directory. "
                    "Found firmware files: {}".format(" ".join(firmware_fbis)))
             programmer.write_binary(*config["firmware"], firmware_fbis[0])
+        elif action == "updater":
+            updater_bin = artifact_path(binary_dir, "software", "updater", "updater.fbi")
+            programmer.write_binary(*config["updater"], updater_bin)
         elif action == "load":
             gateware_bit = artifact_path(binary_dir, "gateware", "top.bit")
             programmer.load(gateware_bit, 0)
