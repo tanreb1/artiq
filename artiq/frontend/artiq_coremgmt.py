@@ -72,6 +72,18 @@ def get_argparser():
                          metavar=("KEY", "FILENAME"),
                          help="key and file whose content to be written to "
                               "core device config")
+    p_write_binaries = subparsers.add_parser("write_binaries",
+                                    help="write key-value records to core "
+                                         "device config")
+    p_write_binaries.add_argument("-s", "--string", nargs=2, action="append",
+                         default=[], metavar=("KEY", "STRING"), type=str,
+                         help="key-value records to be written to core device "
+                              "config")
+    p_write_binaries.add_argument("-f", "--file", nargs=2, action="append",
+                         type=str, default=[],
+                         metavar=("KEY", "FILENAME"),
+                         help="key and file whose content to be written to "
+                              "core device config")
 
     p_remove = subparsers.add_parser("remove",
                                      help="remove key from core device config")
@@ -127,6 +139,12 @@ def main():
             else:
                 print(value)
         if args.action == "write":
+            for key, value in args.string:
+                mgmt.config_write(key, value.encode("utf-8"))
+            for key, filename in args.file:
+                with open(filename, "rb") as fi:
+                    mgmt.config_write(key, fi.read())
+        if args.action == "write_binaries":
             for key, value in args.string:
                 mgmt.config_write(key, value.encode("utf-8"))
             for key, filename in args.file:
