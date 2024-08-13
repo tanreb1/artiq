@@ -88,6 +88,12 @@ fn worker(io: &Io, stream: &mut TcpStream) -> Result<(), Error<SchedError>> {
                     Err(_) => Reply::Error.write_to(stream)
                 }?;
             }
+            Request::ConfigWriteBin { ref key, ref value } => {
+                match config::write_bin(key, value) {
+                    Ok(_)  => Reply::Success.write_to(stream),
+                    Err(_) => Reply::Error.write_to(stream)
+                }?;
+            }
             Request::ConfigRemove { ref key } => {
                 match config::remove(key) {
                     Ok(()) => Reply::Success.write_to(stream),

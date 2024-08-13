@@ -72,7 +72,7 @@ def get_argparser():
                          metavar=("KEY", "FILENAME"),
                          help="key and file whose content to be written to "
                               "core device config")
-    p_write_binaries = subparsers.add_parser("write_binaries",
+    p_write_binaries = subparsers.add_parser("write_bin",
                                     help="write key-value records to core "
                                          "device config")
     p_write_binaries.add_argument("-s", "--string", nargs=2, action="append",
@@ -144,12 +144,14 @@ def main():
             for key, filename in args.file:
                 with open(filename, "rb") as fi:
                     mgmt.config_write(key, fi.read())
-        if args.action == "write_binaries":
+        if args.action == "write_bin":
             for key, value in args.string:
                 mgmt.config_write(key, value.encode("utf-8"))
             for key, filename in args.file:
+                if not filename.endswith('.fbi'):
+                    raise ValueError(f"File {filename} does not have the required .fbi extension")
                 with open(filename, "rb") as fi:
-                    mgmt.config_write(key, fi.read())
+                    mgmt.config_write_bin(key, fi.read())
         if args.action == "remove":
             for key in args.key:
                 mgmt.config_remove(key)

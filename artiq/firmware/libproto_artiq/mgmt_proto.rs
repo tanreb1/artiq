@@ -60,6 +60,7 @@ pub enum Request {
 
     ConfigRead   { key: String },
     ConfigWrite  { key: String, value: Vec<u8> },
+    ConfigWriteBin  { key: String, value: Vec<u8> },
     ConfigRemove { key: String },
     ConfigErase,
 
@@ -118,6 +119,11 @@ impl Request {
                 key: reader.read_string()?
             },
             15 => Request::ConfigErase,
+
+            16 => Request::ConfigWriteBin {
+                key:   reader.read_string()?,
+                value: reader.read_bytes()?
+            },
 
             5 => Request::Reboot,
 

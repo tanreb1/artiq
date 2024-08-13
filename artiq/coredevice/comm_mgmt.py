@@ -18,6 +18,7 @@ class Request(Enum):
     ConfigWrite = 13
     ConfigRemove = 14
     ConfigErase = 15
+    ConfigWriteBin = 16
 
     Reboot = 5
 
@@ -170,6 +171,17 @@ class CommMgmt:
 
     def config_write(self, key, value):
         self._write_header(Request.ConfigWrite)
+        self._write_string(key)
+        self._write_bytes(value)
+        ty = self._read_header()
+        if ty == Reply.Error:
+            raise IOError("Device failed to write config. More information may be available in the log.")
+        elif ty != Reply.Success:
+            raise IOError("Incorrect reply from device: {} (expected {})".
+                          format(ty, Reply.Success))
+    
+    def config_write_bin(self, key, value):
+        self._write_header(Request.ConfigWriteBin)
         self._write_string(key)
         self._write_bytes(value)
         ty = self._read_header()

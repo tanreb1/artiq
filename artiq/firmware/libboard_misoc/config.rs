@@ -288,6 +288,74 @@ mod imp {
 
         Ok(())
     }
+
+
+/*
++-----------------+---------------------+------------------+
+|   Partition A   |      Adress         |     Size         |
++-----------------+---------------------+------------------+
+| Gateware A      | 0x000000 - 0x400000 | 4 MB             |
+| Bootloader A    | 0x400000 - 0x440000 | 256 KB           |
+| Storage A       | 0x440000 - 0x450000 | 64 KB            |
+| Firmware A      | 0x450000 - 0x7FFFFF | 3.5 MB           |
++-----------------+-------------------+--------------------+
+
++-----------------+---------------------+------------------+
+|   Partition B   |      Adress         |     Size         |
++-----------------+---------------------+------------------+
+| Gateware B      | 0x800000 - 0xC00000 | 4 MB             |
+| Bootloader B    | 0xC00000 - 0xC40000 | 256 KB           |
+| Storage B       | 0xC40000 - 0xC50000 | 64 KB            |
+| Firmware B      | 0xC50000 - 0xFFFFFF | 3.5 MB           |
++-----------------+---------------------+------------------+
+
+*/
+
+    pub fn write_bin(key: &str, value: &[u8]) -> Result<(), Error> {
+        if key == "A_Gateware" {
+            let address = 0x00000000;
+            unsafe { spiflash::write(address, value); }
+            cache::flush_l2_cache();
+            Ok(())
+        } else if key == "A_Bootloader" {
+            let address = 0x00400000;
+            unsafe { spiflash::write(address, value); }
+            cache::flush_l2_cache();
+            Ok(())
+        } else if key == "A_Storage" {
+            let address = 0x00440000;
+            unsafe { spiflash::write(address, value); }
+            cache::flush_l2_cache();
+            Ok(())
+        } else if key == "A_Firmware" {
+            let address = 0x00450000;
+            unsafe { spiflash::write(address, value); }
+            cache::flush_l2_cache();
+            Ok(())
+        } else if key == "B_Gateware" {
+            let address = 0x00800000;
+            unsafe { spiflash::write(address, value); }
+            cache::flush_l2_cache();
+            Ok(())
+        } else if key == "B_Bootloader" {
+            let address = 0x00C00000;
+            unsafe { spiflash::write(address, value); }
+            cache::flush_l2_cache();
+            Ok(())
+        } else if key == "B_Storage" {
+            let address = 0x00C40000;
+            unsafe { spiflash::write(address, value); }
+            cache::flush_l2_cache();
+            Ok(())
+        } else if key == "B_Firmware" {
+            let address = 0x00C50000;
+            unsafe { spiflash::write(address, value); }
+            cache::flush_l2_cache();
+            Ok(())
+        } else {
+            Err(Error::KeyNotFound)
+        }
+    }
 }
 
 #[cfg(not(has_spiflash))]
