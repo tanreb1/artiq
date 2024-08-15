@@ -59,6 +59,7 @@ pub enum Request {
     SetUartLogFilter(log::LevelFilter),
 
     ConfigRead   { key: String },
+    ConfigReadBin   { key: String },
     ConfigWrite  { key: String, value: Vec<u8> },
     ConfigWriteBin  { key: String, value: Vec<u8> },
     ConfigRemove { key: String },
@@ -123,6 +124,9 @@ impl Request {
             16 => Request::ConfigWriteBin {
                 key:   reader.read_string()?,
                 value: reader.read_bytes()?
+            },
+            17 => Request::ConfigReadBin {
+                key:   reader.read_string()?,
             },
 
             5 => Request::Reboot,

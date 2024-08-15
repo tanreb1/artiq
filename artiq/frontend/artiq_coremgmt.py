@@ -60,6 +60,11 @@ def get_argparser():
     p_read.add_argument("key", metavar="KEY", type=str,
                         help="key to be read from core device config")
 
+    p_read_binaries = subparsers.add_parser("read_bin",
+                                   help="read key from core device config")
+    p_read_binaries.add_argument("key", metavar="KEY", type=str,
+                        help="key to be read from core device config")
+
     p_write = subparsers.add_parser("write",
                                     help="write key-value records to core "
                                          "device config")
@@ -134,6 +139,12 @@ def main():
     if args.tool == "config":
         if args.action == "read":
             value = mgmt.config_read(args.key)
+            if not value:
+                print("Key {} does not exist".format(args.key))
+            else:
+                print(value)
+        if args.action == "read_bin":
+            value = mgmt.config_read_bin(args.key)
             if not value:
                 print("Key {} does not exist".format(args.key))
             else:

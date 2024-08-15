@@ -178,6 +178,29 @@ mod imp {
         })
     }
 
+    pub fn read_bin<F: FnOnce(Result<&[u8], Error>) -> R, R>(key: &str, f: F) -> R {
+        if key == "GGG" {
+            match read_binaries(0x00C50000, 0x00C5F000) {
+                Ok(data) => f(Ok(data)),
+                Err(e) => f(Err(e)),
+            }
+        } else {
+            f(Err(Error::KeyNotFound))
+        }
+    }
+    
+    pub fn read_binaries(adres_start: usize, adres_stop: usize) -> Result<&'static [u8], Error> {
+        if adres_stop <= adres_start {
+            return Err(Error::InvalidSize { offset: adres_start, size: adres_stop - adres_start });
+        }
+        let data = unsafe {
+            core::slice::from_raw_parts(adres_start as *const u8, adres_stop - adres_start)
+        };
+    
+        Ok(data)
+    }
+
+
     unsafe fn append_at(data: &[u8], mut offset: usize,
                         key: &[u8], value: &[u8]) -> Result<usize, Error> {
         let record_size = 4 + key.len() + 1 + value.len();
@@ -288,7 +311,6 @@ mod imp {
 
         Ok(())
     }
-
 
 /*
 +-----------------+---------------------+------------------+

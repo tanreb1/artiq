@@ -19,6 +19,7 @@ class Request(Enum):
     ConfigRemove = 14
     ConfigErase = 15
     ConfigWriteBin = 16
+    ConfigReadBin = 17
 
     Reboot = 5
 
@@ -164,6 +165,17 @@ class CommMgmt:
         ty = self._read_header()
         if ty == Reply.Error:
             raise IOError("Device failed to read config. The key may not exist.")
+        elif ty != Reply.ConfigData:
+            raise IOError("Incorrect reply from device: {} (expected {})".
+                          format(ty, Reply.ConfigData))
+        return self._read_string()
+
+    def config_read_bin(self, key):
+        self._write_header(Request.ConfigReadBin)
+        self._write_string(key)
+        ty = self._read_header()
+        if ty == Reply.Error:
+            raise IOError("Device failed to read_bin config. The key may not exist.")
         elif ty != Reply.ConfigData:
             raise IOError("Incorrect reply from device: {} (expected {})".
                           format(ty, Reply.ConfigData))
